@@ -36,7 +36,7 @@ public class ItemControllerTest {
         Item item = new Item();
         item.setId(1L);
         item.setName("Test Item");
-        BigDecimal price = BigDecimal.valueOf(1.95);
+        BigDecimal price = BigDecimal.valueOf(2.99);
         item.setPrice(price);
         item.setDescription("Lorum Epsom");
 
@@ -48,7 +48,7 @@ public class ItemControllerTest {
 
     @Test
     public void getItemsByName(){
-        ResponseEntity<List<Item>> responseEntity = itemController.getItemsByName("Lorum Epsum");
+        ResponseEntity<List<Item>> responseEntity = itemController.getItemsByName("Lorum Epsom");
         assertNotNull(responseEntity);
         assertEquals(200, responseEntity.getStatusCodeValue());
         List<Item> item = responseEntity.getBody();

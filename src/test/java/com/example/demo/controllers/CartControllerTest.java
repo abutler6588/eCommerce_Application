@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.model.persistence.Cart;
 import com.example.demo.model.persistence.Item;
+import com.example.demo.model.persistence.User;
 
 import com.example.demo.model.persistence.repositories.CartRepository;
 import com.example.demo.model.persistence.repositories.ItemRepository;
@@ -39,8 +40,8 @@ public class CartControllerTest {
     public void setUp(){
 
         cartController = new CartController();
-        injectObjects(cartController, "cartController", cartRepo);
         injectObjects(cartController, "userRepository", userRepo);
+        injectObjects(cartController, "cartRepository", cartRepo);
         injectObjects(cartController,"itemRepository", itemRepo);
 
         Item item = new Item();
@@ -51,10 +52,22 @@ public class CartControllerTest {
         item.setDescription("Lorum Epsom");
         when(itemRepo.findById(1L)).thenReturn(java.util.Optional.of(item));
 
+        /** Udacity Review Feedback to mock the userRepo
+         * same way as mocked itemRepo, as addToCard method was trying
+         * to locate user at first
+         * */
+        User user1 = new User();
+        Cart cartMock = new Cart();
+        user1.setId(0);
+        user1.setUsername("test");
+        user1.setPassword("testPassword");
+        user1.setCart(cartMock);
+        when(userRepo.findByUsername("test")).thenReturn(user1);
+
     }
 
     @Test
-    public void addToCart(){
+    public void addTocart(){
         ModifyCartRequest r = new ModifyCartRequest();
         r.setItemId(1L);
         r.setQuantity(1);
@@ -65,11 +78,11 @@ public class CartControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         Cart c = response.getBody();
         assertNotNull(c);
-        assertEquals(BigDecimal.valueOf(2.99), c.getTotal());
+        assertEquals(BigDecimal.valueOf(1.95), c.getTotal());
     }
 
     @Test
-    public void removeFromCart(){
+    public void removeFromcart(){
         ModifyCartRequest r = new ModifyCartRequest();
         r.setItemId(1L);
         r.setQuantity(2);
@@ -88,6 +101,6 @@ public class CartControllerTest {
         assertEquals(200, responseEntity.getStatusCodeValue());
         Cart cart = responseEntity.getBody();
         assertNotNull(cart);
-        assertEquals(BigDecimal.valueOf(2.99), cart.getTotal());
+        assertEquals(BigDecimal.valueOf(1.95), cart.getTotal());
     }
 }
